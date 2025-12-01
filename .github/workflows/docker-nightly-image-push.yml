@@ -11,18 +11,18 @@ permissions:
   contents: read
 
 jobs:
-  build-phar:
+  build-assets:
     if: github.ref_name == github.event.repository.default_branch
-    # See build-phar.yml for a list of the permissions and why they are needed
+    # See build-assets.yml for a list of the permissions and why they are needed
     permissions:
       contents: read
       id-token: write
       attestations: write
-    uses: ./.github/workflows/build-phar.yml
+    uses: ./.github/workflows/build-assets.yml
 
   build-and-push-docker-image:
     if: github.ref_name == github.event.repository.default_branch
-    needs: build-phar
+    needs: build-assets
     # See build-and-push-docker-image.yml for a list of the permissions and why they are needed
     permissions:
       contents: read
