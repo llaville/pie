@@ -39,6 +39,7 @@ use Php\Pie\Installing\Uninstall;
 use Php\Pie\Installing\UninstallUsingUnlink;
 use Php\Pie\Installing\UnixInstall;
 use Php\Pie\Installing\WindowsInstall;
+use Php\Pie\SelfManage\BuildTools\CheckAllBuildTools;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -194,6 +195,13 @@ final class Container
                 }
 
                 return $container->get(UnixInstall::class);
+            },
+        );
+
+        $container->singleton(
+            CheckAllBuildTools::class,
+            static function (): CheckAllBuildTools {
+                return CheckAllBuildTools::buildToolsFactory();
             },
         );
 
