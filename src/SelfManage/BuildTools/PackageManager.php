@@ -10,12 +10,14 @@ use Symfony\Component\Process\ExecutableFinder;
 
 use function array_unshift;
 
+/** @internal This is not public API for PIE, so should not be depended upon unless you accept the risk of BC breaks */
 enum PackageManager: string
 {
     case Apt = 'apt-get';
     case Apk = 'apk';
     // @todo dnf
     // @todo yum
+    // @todo brew
 
     public static function detect(): self|null
     {

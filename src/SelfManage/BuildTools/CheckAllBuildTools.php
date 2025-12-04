@@ -9,58 +9,65 @@ use Composer\IO\IOInterface;
 use function array_unique;
 use function implode;
 
-final class CheckAllBuildTools
+/** @internal This is not public API for PIE, so should not be depended upon unless you accept the risk of BC breaks */
+class CheckAllBuildTools
 {
     public static function buildToolsFactory(): self
     {
-        // @todo libtool
         return new self([
-            new CheckIndividualBuildToolInPath(
+            new BinaryBuildToolFinder(
                 'gcc',
                 [
                     PackageManager::Apt->value => 'gcc',
                     PackageManager::Apk->value => 'build-base',
                 ],
             ),
-            new CheckIndividualBuildToolInPath(
+            new BinaryBuildToolFinder(
                 'make',
                 [
                     PackageManager::Apt->value => 'make',
                     PackageManager::Apk->value => 'build-base',
                 ],
             ),
-            new CheckIndividualBuildToolInPath(
+            new BinaryBuildToolFinder(
                 'autoconf',
                 [
                     PackageManager::Apt->value => 'autoconf',
                     PackageManager::Apk->value => 'autoconf',
                 ],
             ),
-            new CheckIndividualBuildToolInPath(
+            new BinaryBuildToolFinder(
                 'bison',
                 [
                     PackageManager::Apt->value => 'bison',
                     PackageManager::Apk->value => 'bison',
                 ],
             ),
-            new CheckIndividualBuildToolInPath(
+            new BinaryBuildToolFinder(
                 're2c',
                 [
                     PackageManager::Apt->value => 're2c',
                     PackageManager::Apk->value => 're2c',
                 ],
             ),
-            new CheckIndividualBuildToolInPath(
+            new BinaryBuildToolFinder(
                 'pkg-config',
                 [
                     PackageManager::Apt->value => 'pkg-config',
                     PackageManager::Apk->value => 'pkgconfig',
                 ],
             ),
+            new BinaryBuildToolFinder(
+                'libtoolize',
+                [
+                    PackageManager::Apt->value => 'libtool',
+                    PackageManager::Apk->value => 'libtool',
+                ],
+            ),
         ]);
     }
 
-    /** @param list<CheckIndividualBuildToolInPath> $buildTools */
+    /** @param list<BinaryBuildToolFinder> $buildTools */
     public function __construct(
         private readonly array $buildTools,
     ) {
@@ -73,15 +80,23 @@ final class CheckAllBuildTools
         $missingTools      = [];
         $packagesToInstall = [];
         $allFound          = true;
+
         foreach ($this->buildTools as $buildTool) {
             if ($buildTool->check() !== false) {
                 $io->write('Build tool ' . $buildTool->tool . ' is installed.', verbosity: IOInterface::VERY_VERBOSE);
                 continue;
             }
 
-            $allFound            = false;
-            $missingTools[]      = $buildTool->tool;
-            $packagesToInstall[] = $buildTool->packageNameFor($packageManager);
+            $allFound       = false;
+            $missingTools[] = $buildTool->tool;
+            $packageName    = $buildTool->packageNameFor($packageManager);
+
+            if ($packageName === null) {
+                $io->writeError('<warning>Could not find package name for build tool ' . $buildTool->tool . '.</warning>');
+                continue;
+            }
+
+            $packagesToInstall[] = $packageName;
         }
 
         if ($allFound) {

@@ -6,8 +6,10 @@ namespace Php\Pie\SelfManage\BuildTools;
 
 use Symfony\Component\Process\ExecutableFinder;
 
-class CheckIndividualBuildToolInPath
+/** @internal This is not public API for PIE, so should not be depended upon unless you accept the risk of BC breaks */
+class BinaryBuildToolFinder
 {
+    /** @param array<PackageManager::*, non-empty-string|null> $packageManagerPackages */
     public function __construct(
         public readonly string $tool,
         private readonly array $packageManagerPackages,
@@ -19,10 +21,9 @@ class CheckIndividualBuildToolInPath
         return (new ExecutableFinder())->find($this->tool) !== null;
     }
 
-    public function packageNameFor(PackageManager $packageManager): string
+    /** @return non-empty-string|null */
+    public function packageNameFor(PackageManager $packageManager): string|null
     {
-        // @todo could we do a check the package exists?
-
         // If we need to customise specific package names depending on OS
         // specific parameters, this is likely the place to do it
         return $this->packageManagerPackages[$packageManager->value];
