@@ -6,12 +6,14 @@ namespace Php\Pie\SelfManage\BuildTools;
 
 use Composer\IO\IOInterface;
 
+use function array_unique;
 use function implode;
 
 final class CheckAllBuildTools
 {
     public static function buildToolsFactory(): self
     {
+        // @todo libtool
         return new self([
             new CheckIndividualBuildToolInPath(
                 'gcc',
@@ -24,7 +26,35 @@ final class CheckAllBuildTools
                 'make',
                 [
                     PackageManager::Apt->value => 'make',
-                    PackageManager::Apk->value => 'make',
+                    PackageManager::Apk->value => 'build-base',
+                ],
+            ),
+            new CheckIndividualBuildToolInPath(
+                'autoconf',
+                [
+                    PackageManager::Apt->value => 'autoconf',
+                    PackageManager::Apk->value => 'autoconf',
+                ],
+            ),
+            new CheckIndividualBuildToolInPath(
+                'bison',
+                [
+                    PackageManager::Apt->value => 'bison',
+                    PackageManager::Apk->value => 'bison',
+                ],
+            ),
+            new CheckIndividualBuildToolInPath(
+                're2c',
+                [
+                    PackageManager::Apt->value => 're2c',
+                    PackageManager::Apk->value => 're2c',
+                ],
+            ),
+            new CheckIndividualBuildToolInPath(
+                'pkg-config',
+                [
+                    PackageManager::Apt->value => 'pkg-config',
+                    PackageManager::Apk->value => 'pkgconfig',
                 ],
             ),
         ]);
@@ -41,7 +71,7 @@ final class CheckAllBuildTools
         $io->write('<info>Checking if all build tools are installed.</info>', verbosity: IOInterface::VERBOSE);
         $packageManager    = PackageManager::detect();
         $missingTools      = [];
-        $packagesToSuggest = [];
+        $packagesToInstall = [];
         $allFound          = true;
         foreach ($this->buildTools as $buildTool) {
             if ($buildTool->check() !== false) {
@@ -51,7 +81,7 @@ final class CheckAllBuildTools
 
             $allFound            = false;
             $missingTools[]      = $buildTool->tool;
-            $packagesToSuggest[] = $buildTool->packageNameFor($packageManager);
+            $packagesToInstall[] = $buildTool->packageNameFor($packageManager);
         }
 
         if ($allFound) {
@@ -63,12 +93,14 @@ final class CheckAllBuildTools
         $io->write('<comment>The following build tools are missing: ' . implode(', ', $missingTools) . '</comment>');
 
         if (! $io->isInteractive() && ! $forceInstall) {
-            $io->writeError('<error>You are not running in interactive mode, and --force was not specified. You may need to install the following build tools: ' . implode(' ', $packagesToSuggest) . '</error>');
+            $io->writeError('<error>You are not running in interactive mode, and --force was not specified. You may need to install the following build tools: ' . implode(' ', $packagesToInstall) . '</error>');
 
             return;
         }
 
-        $io->write('The following command will be run: ' . implode(' ', $packageManager->installCommand($packagesToSuggest)), verbosity: IOInterface::VERBOSE);
+        $packagesToInstall = array_unique($packagesToInstall);
+
+        $io->write('The following command will be run: ' . implode(' ', $packageManager->installCommand($packagesToInstall)), verbosity: IOInterface::VERBOSE);
 
         if ($io->isInteractive() && ! $forceInstall) {
             if (! $io->askConfirmation('<question>Would you like to install them now?</question>', false)) {
@@ -78,7 +110,7 @@ final class CheckAllBuildTools
             }
         }
 
-        $packageManager->install($packagesToSuggest);
+        $packageManager->install($packagesToInstall);
         $io->write('<info>Build tools installed.</info>');
     }
 }

@@ -14,6 +14,8 @@ enum PackageManager: string
 {
     case Apt = 'apt-get';
     case Apk = 'apk';
+    // @todo dnf
+    // @todo yum
 
     public static function detect(): self|null
     {
