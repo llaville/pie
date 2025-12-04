@@ -7,6 +7,8 @@ namespace Php\Pie\SelfManage\BuildTools;
 use Composer\IO\IOInterface;
 
 use function array_unique;
+use function array_values;
+use function count;
 use function implode;
 
 /** @internal This is not public API for PIE, so should not be depended upon unless you accept the risk of BC breaks */
@@ -76,9 +78,10 @@ class CheckAllBuildTools
     public function check(IOInterface $io, bool $forceInstall): void
     {
         $io->write('<info>Checking if all build tools are installed.</info>', verbosity: IOInterface::VERBOSE);
-        $packageManager    = PackageManager::detect();
-        $missingTools      = [];
+        /** @var list<string> $packagesToInstall */
         $packagesToInstall = [];
+        $missingTools      = [];
+        $packageManager    = PackageManager::detect();
         $allFound          = true;
 
         foreach ($this->buildTools as $buildTool) {
@@ -89,10 +92,15 @@ class CheckAllBuildTools
 
             $allFound       = false;
             $missingTools[] = $buildTool->tool;
-            $packageName    = $buildTool->packageNameFor($packageManager);
+
+            if ($packageManager === null) {
+                continue;
+            }
+
+            $packageName = $buildTool->packageNameFor($packageManager);
 
             if ($packageName === null) {
-                $io->writeError('<warning>Could not find package name for build tool ' . $buildTool->tool . '.</warning>');
+                $io->writeError('<warning>Could not find package name for build tool ' . $buildTool->tool . '.</warning>', verbosity: IOInterface::VERBOSE);
                 continue;
             }
 
@@ -107,15 +115,27 @@ class CheckAllBuildTools
 
         $io->write('<comment>The following build tools are missing: ' . implode(', ', $missingTools) . '</comment>');
 
-        if (! $io->isInteractive() && ! $forceInstall) {
-            $io->writeError('<error>You are not running in interactive mode, and --force was not specified. You may need to install the following build tools: ' . implode(' ', $packagesToInstall) . '</error>');
+        if ($packageManager === null) {
+            $io->write('<warning>Could not find a package manager to install the missing build tools.</warning>');
 
             return;
         }
 
-        $packagesToInstall = array_unique($packagesToInstall);
+        if (! count($packagesToInstall)) {
+            $io->write('<warning>Could not determine packages to install.</warning>');
 
-        $io->write('The following command will be run: ' . implode(' ', $packageManager->installCommand($packagesToInstall)), verbosity: IOInterface::VERBOSE);
+            return;
+        }
+
+        $proposedInstallCommand = implode(' ', $packageManager->installCommand(array_values(array_unique($packagesToInstall))));
+
+        if (! $io->isInteractive() && ! $forceInstall) {
+            $io->writeError('<warning>You are not running in interactive mode. You may need to run: ' . $proposedInstallCommand . '</warning>');
+
+            return;
+        }
+
+        $io->write('The following command will be run: ' . $proposedInstallCommand, verbosity: IOInterface::VERY_VERBOSE);
 
         if ($io->isInteractive() && ! $forceInstall) {
             if (! $io->askConfirmation('<question>Would you like to install them now?</question>', false)) {
@@ -125,7 +145,7 @@ class CheckAllBuildTools
             }
         }
 
-        $packageManager->install($packagesToInstall);
-        $io->write('<info>Build tools installed.</info>');
+        $packageManager->install(array_values(array_unique($packagesToInstall)));
+        $io->write('<info>Missing build tools have been installed.</info>');
     }
 }
