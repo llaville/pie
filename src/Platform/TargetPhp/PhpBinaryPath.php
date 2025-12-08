@@ -298,6 +298,32 @@ PHP,
         return $phpVersion;
     }
 
+    /** @return non-empty-string */
+    public function majorVersion(): int
+    {
+        $phpVersion = self::cleanWarningAndDeprecationsFromOutput(Process::run([
+            $this->phpBinaryPath,
+            '-r',
+            'echo PHP_MAJOR_VERSION;',
+        ]));
+        Assert::stringNotEmpty($phpVersion, 'Could not determine PHP version');
+
+        return (int) $phpVersion;
+    }
+
+    /** @return non-empty-string */
+    public function minorVersion(): int
+    {
+        $phpVersion = self::cleanWarningAndDeprecationsFromOutput(Process::run([
+            $this->phpBinaryPath,
+            '-r',
+            'echo PHP_MINOR_VERSION;',
+        ]));
+        Assert::stringNotEmpty($phpVersion, 'Could not determine PHP version');
+
+        return (int) $phpVersion;
+    }
+
     public function machineType(): Architecture
     {
         $phpMachineType = self::cleanWarningAndDeprecationsFromOutput(Process::run([

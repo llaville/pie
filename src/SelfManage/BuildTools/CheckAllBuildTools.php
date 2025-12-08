@@ -6,6 +6,7 @@ namespace Php\Pie\SelfManage\BuildTools;
 
 use Composer\IO\IOInterface;
 
+use Php\Pie\Platform\TargetPlatform;
 use function array_unique;
 use function array_values;
 use function count;
@@ -66,6 +67,13 @@ class CheckAllBuildTools
                     PackageManager::Apk->value => 'libtool',
                 ],
             ),
+            new BinaryBuildToolFinder(
+                'phpize',
+                [
+                    PackageManager::Apt->value => 'php-dev',
+                    PackageManager::Apk->value => 'php{major}{minor}-dev',
+                ],
+            ),
         ]);
     }
 
@@ -75,7 +83,7 @@ class CheckAllBuildTools
     ) {
     }
 
-    public function check(IOInterface $io, bool $autoInstallIfMissing): void
+    public function check(IOInterface $io, TargetPlatform $targetPlatform, bool $autoInstallIfMissing): void
     {
         $io->write('<info>Checking if all build tools are installed.</info>', verbosity: IOInterface::VERBOSE);
         /** @var list<string> $packagesToInstall */
@@ -97,7 +105,7 @@ class CheckAllBuildTools
                 continue;
             }
 
-            $packageName = $buildTool->packageNameFor($packageManager);
+            $packageName = $buildTool->packageNameFor($packageManager, $targetPlatform);
 
             if ($packageName === null) {
                 $io->writeError('<warning>Could not find package name for build tool ' . $buildTool->tool . '.</warning>', verbosity: IOInterface::VERBOSE);
@@ -137,7 +145,7 @@ class CheckAllBuildTools
             return;
         }
 
-        $io->write('The following command will be run: ' . $proposedInstallCommand, verbosity: IOInterface::VERY_VERBOSE);
+        $io->write('The following command will be run: ' . $proposedInstallCommand, verbosity: IOInterface::VERBOSE);
 
         if ($io->isInteractive() && ! $autoInstallIfMissing) {
             if (! $io->askConfirmation('<question>Would you like to install them now?</question>', false)) {
