@@ -9,10 +9,12 @@ use Php\Pie\Util\Process;
 use Symfony\Component\Process\ExecutableFinder;
 
 use function array_unshift;
+use function implode;
 
 /** @internal This is not public API for PIE, so should not be depended upon unless you accept the risk of BC breaks */
 enum PackageManager: string
 {
+    case Test = 'test';
     case Apt = 'apt-get';
     case Apk = 'apk';
     // @todo dnf
@@ -24,6 +26,10 @@ enum PackageManager: string
         $executableFinder = new ExecutableFinder();
 
         foreach (self::cases() as $packageManager) {
+            if ($packageManager === self::Test) {
+                continue;
+            }
+
             if ($executableFinder->find($packageManager->value) !== null) {
                 return $packageManager;
             }
@@ -40,6 +46,7 @@ enum PackageManager: string
     public function installCommand(array $packages): array
     {
         return match ($this) {
+            self::Test => ['echo', '"fake installing ' . implode(', ', $packages) . '"'],
             self::Apt => ['apt-get', 'install', '-y', '--no-install-recommends', '--no-install-suggests', ...$packages],
             self::Apk => ['apk', 'add', '--no-cache', ...$packages],
         };
@@ -51,9 +58,9 @@ enum PackageManager: string
         $cmd = self::installCommand($packages);
 
         // @todo ideally only add sudo if it's needed
-        if (Sudo::exists()) {
-            array_unshift($cmd, Sudo::find());
-        }
+//        if (Sudo::exists()) {
+//            array_unshift($cmd, Sudo::find());
+//        }
 
         Process::run($cmd);
     }

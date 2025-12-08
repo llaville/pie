@@ -17,6 +17,7 @@ use Php\Pie\DependencyResolver\UnableToResolveRequirement;
 use Php\Pie\Installing\InstallForPhpProject\FindMatchingPackages;
 use Php\Pie\Platform\TargetPlatform;
 use Php\Pie\SelfManage\BuildTools\CheckAllBuildTools;
+use Php\Pie\SelfManage\BuildTools\PackageManager;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -81,7 +82,12 @@ final class InstallCommand extends Command
         CommandHelper::applyNoCacheOptionIfSet($input, $this->io);
 
         if (CommandHelper::shouldCheckForBuildTools($input)) {
-            $this->checkBuildTools->check($this->io, $targetPlatform, CommandHelper::autoInstallBuildTools($input));
+            $this->checkBuildTools->check(
+                $this->io,
+                PackageManager::detect(),
+                $targetPlatform,
+                CommandHelper::autoInstallBuildTools($input),
+            );
         }
 
         $composer = PieComposerFactory::createPieComposer(

@@ -83,13 +83,12 @@ class CheckAllBuildTools
     ) {
     }
 
-    public function check(IOInterface $io, TargetPlatform $targetPlatform, bool $autoInstallIfMissing): void
+    public function check(IOInterface $io, PackageManager|null $packageManager, TargetPlatform $targetPlatform, bool $autoInstallIfMissing): void
     {
         $io->write('<info>Checking if all build tools are installed.</info>', verbosity: IOInterface::VERBOSE);
         /** @var list<string> $packagesToInstall */
         $packagesToInstall = [];
         $missingTools      = [];
-        $packageManager    = PackageManager::detect();
         $allFound          = true;
 
         foreach ($this->buildTools as $buildTool) {
