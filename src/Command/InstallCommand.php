@@ -80,7 +80,9 @@ final class InstallCommand extends Command
         $forceInstallPackageVersion = CommandHelper::determineForceInstallingPackageVersion($input);
         CommandHelper::applyNoCacheOptionIfSet($input, $this->io);
 
-        $this->checkBuildTools->check($this->io, false); // @todo force or not
+        if (CommandHelper::shouldCheckForBuildTools($input)) {
+            $this->checkBuildTools->check($this->io, CommandHelper::autoInstallBuildTools($input));
+        }
 
         $composer = PieComposerFactory::createPieComposer(
             $this->container,

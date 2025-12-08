@@ -39,21 +39,22 @@ enum PackageManager: string
      */
     public function installCommand(array $packages): array
     {
-        $cmd = match ($this) {
+        return match ($this) {
             self::Apt => ['apt-get', 'install', '-y', '--no-install-recommends', '--no-install-suggests', ...$packages],
             self::Apk => ['apk', 'add', '--no-cache', ...$packages],
         };
-
-        if (Sudo::exists()) {
-            array_unshift($cmd, Sudo::find());
-        }
-
-        return $cmd;
     }
 
     /** @param list<string> $packages */
     public function install(array $packages): void
     {
-        Process::run(self::installCommand($packages));
+        $cmd = self::installCommand($packages);
+
+        // @todo ideally only add sudo if it's needed
+        if (Sudo::exists()) {
+            array_unshift($cmd, Sudo::find());
+        }
+
+        Process::run($cmd);
     }
 }

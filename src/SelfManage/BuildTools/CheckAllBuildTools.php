@@ -75,7 +75,7 @@ class CheckAllBuildTools
     ) {
     }
 
-    public function check(IOInterface $io, bool $forceInstall): void
+    public function check(IOInterface $io, bool $autoInstallIfMissing): void
     {
         $io->write('<info>Checking if all build tools are installed.</info>', verbosity: IOInterface::VERBOSE);
         /** @var list<string> $packagesToInstall */
@@ -129,15 +129,17 @@ class CheckAllBuildTools
 
         $proposedInstallCommand = implode(' ', $packageManager->installCommand(array_values(array_unique($packagesToInstall))));
 
-        if (! $io->isInteractive() && ! $forceInstall) {
-            $io->writeError('<warning>You are not running in interactive mode. You may need to run: ' . $proposedInstallCommand . '</warning>');
+        if (! $io->isInteractive() && ! $autoInstallIfMissing) {
+            $io->writeError('<warning>You are not running in interactive mode, and you did not provide the --auto-install-build-tools flag.');
+            $io->writeError('You may need to run: ' . $proposedInstallCommand . '</warning>');
+            $io->writeError('');
 
             return;
         }
 
         $io->write('The following command will be run: ' . $proposedInstallCommand, verbosity: IOInterface::VERY_VERBOSE);
 
-        if ($io->isInteractive() && ! $forceInstall) {
+        if ($io->isInteractive() && ! $autoInstallIfMissing) {
             if (! $io->askConfirmation('<question>Would you like to install them now?</question>', false)) {
                 $io->write('<comment>Ok, but things might not work. Just so you know.</comment>');
 
