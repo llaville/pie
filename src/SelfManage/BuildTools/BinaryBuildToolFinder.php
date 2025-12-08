@@ -24,6 +24,10 @@ class BinaryBuildToolFinder
     /** @return non-empty-string|null */
     public function packageNameFor(PackageManager $packageManager): string|null
     {
+        if (! array_key_exists($packageManager->value, $this->packageManagerPackages)) {
+            return null;
+        }
+
         // If we need to customise specific package names depending on OS
         // specific parameters, this is likely the place to do it
         return $this->packageManagerPackages[$packageManager->value];
