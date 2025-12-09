@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Php\Pie\SelfManage\BuildTools;
 
 use Composer\IO\IOInterface;
-
 use Php\Pie\Platform\TargetPlatform;
+use Throwable;
+
 use function array_unique;
 use function array_values;
 use function count;
@@ -154,7 +155,16 @@ class CheckAllBuildTools
             }
         }
 
-        $packageManager->install(array_values(array_unique($packagesToInstall)));
-        $io->write('<info>Missing build tools have been installed.</info>');
+        try {
+            $packageManager->install(array_values(array_unique($packagesToInstall)));
+
+            $io->write('<info>Missing build tools have been installed.</info>');
+        } catch (Throwable $throwable) {
+            $io->writeError('<error>Could not install the missing build tools. You may need to install them manually.</error>');
+            $io->writeError($throwable->__toString(), verbosity: IOInterface::VERBOSE);
+            $io->writeError('');
+
+            return;
+        }
     }
 }

@@ -5,18 +5,22 @@ declare(strict_types=1);
 namespace Php\Pie\SelfManage\BuildTools;
 
 use Php\Pie\File\Sudo;
+use Php\Pie\Platform;
 use Php\Pie\Util\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\ExecutableFinder;
 
 use function array_unshift;
 use function implode;
+use function str_contains;
+use function strtolower;
 
 /** @internal This is not public API for PIE, so should not be depended upon unless you accept the risk of BC breaks */
 enum PackageManager: string
 {
     case Test = 'test';
-    case Apt = 'apt-get';
-    case Apk = 'apk';
+    case Apt  = 'apt-get';
+    case Apk  = 'apk';
     // @todo dnf
     // @todo yum
     // @todo brew
@@ -57,11 +61,40 @@ enum PackageManager: string
     {
         $cmd = self::installCommand($packages);
 
-        // @todo ideally only add sudo if it's needed
-//        if (Sudo::exists()) {
-//            array_unshift($cmd, Sudo::find());
-//        }
+        try {
+            Process::run($cmd);
 
-        Process::run($cmd);
+            return;
+        } catch (ProcessFailedException $e) {
+            if (Platform::isInteractive() && self::isProbablyPermissionDenied($e)) {
+                array_unshift($cmd, Sudo::find());
+
+                Process::run($cmd);
+
+                return;
+            }
+
+            throw $e;
+        }
+    }
+
+    private static function isProbablyPermissionDenied(ProcessFailedException $e): bool
+    {
+        $mergedProcessOutput = strtolower($e->getProcess()->getErrorOutput() . $e->getProcess()->getOutput());
+
+        $needles = [
+            'permission denied',
+            'you must be root',
+            'operation not permitted',
+            'are you root',
+        ];
+
+        foreach ($needles as $needle) {
+            if (str_contains($mergedProcessOutput, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

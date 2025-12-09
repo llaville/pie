@@ -298,7 +298,6 @@ PHP,
         return $phpVersion;
     }
 
-    /** @return non-empty-string */
     public function majorVersion(): int
     {
         $phpVersion = self::cleanWarningAndDeprecationsFromOutput(Process::run([
@@ -311,7 +310,6 @@ PHP,
         return (int) $phpVersion;
     }
 
-    /** @return non-empty-string */
     public function minorVersion(): int
     {
         $phpVersion = self::cleanWarningAndDeprecationsFromOutput(Process::run([
