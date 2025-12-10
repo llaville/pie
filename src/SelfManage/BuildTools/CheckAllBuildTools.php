@@ -82,12 +82,12 @@ class CheckAllBuildTools
                     PackageManager::Yum->value => 'libtool',
                 ],
             ),
-            new BinaryBuildToolFinder(
+            new PhpizeBuildToolFinder(
                 'phpize',
                 [
                     PackageManager::Apt->value => 'php-dev',
                     PackageManager::Apk->value => 'php{major}{minor}-dev',
-                    PackageManager::Dnf->value => 'php-devel', // @todo /usr/sbin/phpize exists on Fedora, but is like a placeholder - need step 2: run `phpize --version`
+                    PackageManager::Dnf->value => 'php-devel',
                     PackageManager::Yum->value => 'php-devel',
                 ],
             ),

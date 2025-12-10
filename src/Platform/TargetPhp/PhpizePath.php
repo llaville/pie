@@ -27,6 +27,32 @@ final class PhpizePath
     {
     }
 
+    public static function looksLikeValidPhpize(string $phpizePathToCheck, string|null $forPhpApiVersion = null): bool
+    {
+        $phpizeAttempt = $phpizePathToCheck; // @todo
+        if ($phpizeAttempt === '') {
+            return false;
+        }
+
+        if (! file_exists($phpizeAttempt) || ! is_executable($phpizeAttempt)) {
+            return false;
+        }
+
+        $phpizeProcess = new Process([$phpizeAttempt, '--version']);
+        if ($phpizeProcess->run() !== 0) {
+            return false;
+        }
+
+        if (
+            ! preg_match('/PHP Api Version:\s*(.*)/', $phpizeProcess->getOutput(), $m)
+            || $m[1] === ''
+        ) {
+            return false;
+        }
+
+        return $forPhpApiVersion === null || $forPhpApiVersion === $m[1];
+    }
+
     public static function guessFrom(PhpBinaryPath $phpBinaryPath): self
     {
         $expectedApiVersion = $phpBinaryPath->phpApiVersion();
@@ -45,24 +71,8 @@ final class PhpizePath
         foreach ($phpizeAttempts as $phpizeAttempt) {
             assert($phpizeAttempt !== null);
             assert($phpizeAttempt !== '');
-            if (! file_exists($phpizeAttempt) || ! is_executable($phpizeAttempt)) {
-                continue;
-            }
 
-            $phpizeProcess = new Process([$phpizeAttempt, '--version']);
-            if ($phpizeProcess->run() !== 0) {
-                continue;
-            }
-
-            if (
-                ! preg_match('/PHP Api Version:\s*(.*)/', $phpizeProcess->getOutput(), $m)
-                || ! array_key_exists(1, $m)
-                || $m[1] === ''
-            ) {
-                continue;
-            }
-
-            if ($expectedApiVersion === $m[1]) {
+            if (self::looksLikeValidPhpize($phpizeAttempt, $expectedApiVersion)) {
                 return new self($phpizeAttempt);
             }
         }
