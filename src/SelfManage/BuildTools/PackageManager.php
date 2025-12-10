@@ -21,9 +21,9 @@ enum PackageManager: string
     case Test = 'test';
     case Apt  = 'apt-get';
     case Apk  = 'apk';
-    // @todo dnf
-    // @todo yum
-    // @todo brew
+    case Dnf  = 'dnf';
+    case Yum  = 'yum';
+    // @todo enable: case Brew = 'brew';
 
     public static function detect(): self|null
     {
@@ -53,6 +53,8 @@ enum PackageManager: string
             self::Test => ['echo', '"fake installing ' . implode(', ', $packages) . '"'],
             self::Apt => ['apt-get', 'install', '-y', '--no-install-recommends', '--no-install-suggests', ...$packages],
             self::Apk => ['apk', 'add', '--no-cache', ...$packages],
+            self::Dnf => ['dnf', 'install', '-y', ...$packages],
+            self::Yum => ['yum', 'install', '-y', ...$packages],
         };
     }
 

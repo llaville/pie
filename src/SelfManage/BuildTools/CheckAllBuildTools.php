@@ -24,6 +24,8 @@ class CheckAllBuildTools
                 [
                     PackageManager::Apt->value => 'gcc',
                     PackageManager::Apk->value => 'build-base',
+                    PackageManager::Dnf->value => 'gcc',
+                    PackageManager::Yum->value => 'gcc',
                 ],
             ),
             new BinaryBuildToolFinder(
@@ -31,6 +33,8 @@ class CheckAllBuildTools
                 [
                     PackageManager::Apt->value => 'make',
                     PackageManager::Apk->value => 'build-base',
+                    PackageManager::Dnf->value => 'make',
+                    PackageManager::Yum->value => 'make',
                 ],
             ),
             new BinaryBuildToolFinder(
@@ -38,6 +42,8 @@ class CheckAllBuildTools
                 [
                     PackageManager::Apt->value => 'autoconf',
                     PackageManager::Apk->value => 'autoconf',
+                    PackageManager::Dnf->value => 'autoconf',
+                    PackageManager::Yum->value => 'autoconf',
                 ],
             ),
             new BinaryBuildToolFinder(
@@ -45,6 +51,8 @@ class CheckAllBuildTools
                 [
                     PackageManager::Apt->value => 'bison',
                     PackageManager::Apk->value => 'bison',
+                    PackageManager::Dnf->value => 'bison',
+                    PackageManager::Yum->value => 'bison',
                 ],
             ),
             new BinaryBuildToolFinder(
@@ -52,6 +60,8 @@ class CheckAllBuildTools
                 [
                     PackageManager::Apt->value => 're2c',
                     PackageManager::Apk->value => 're2c',
+                    PackageManager::Dnf->value => 're2c',
+                    PackageManager::Yum->value => 're2c',
                 ],
             ),
             new BinaryBuildToolFinder(
@@ -59,6 +69,8 @@ class CheckAllBuildTools
                 [
                     PackageManager::Apt->value => 'pkg-config',
                     PackageManager::Apk->value => 'pkgconfig',
+                    PackageManager::Dnf->value => 'pkgconf-pkg-config',
+                    PackageManager::Yum->value => 'pkgconf-pkg-config',
                 ],
             ),
             new BinaryBuildToolFinder(
@@ -66,6 +78,8 @@ class CheckAllBuildTools
                 [
                     PackageManager::Apt->value => 'libtool',
                     PackageManager::Apk->value => 'libtool',
+                    PackageManager::Dnf->value => 'libtool',
+                    PackageManager::Yum->value => 'libtool',
                 ],
             ),
             new BinaryBuildToolFinder(
@@ -73,6 +87,8 @@ class CheckAllBuildTools
                 [
                     PackageManager::Apt->value => 'php-dev',
                     PackageManager::Apk->value => 'php{major}{minor}-dev',
+                    PackageManager::Dnf->value => 'php-devel', // @todo /usr/sbin/phpize exists on Fedora, but is like a placeholder - need step 2: run `phpize --version`
+                    PackageManager::Yum->value => 'php-devel',
                 ],
             ),
         ]);
