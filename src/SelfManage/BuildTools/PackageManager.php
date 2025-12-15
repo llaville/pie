@@ -23,7 +23,7 @@ enum PackageManager: string
     case Apk  = 'apk';
     case Dnf  = 'dnf';
     case Yum  = 'yum';
-    // @todo enable: case Brew = 'brew';
+    case Brew = 'brew';
 
     public static function detect(): self|null
     {
@@ -55,6 +55,7 @@ enum PackageManager: string
             self::Apk => ['apk', 'add', '--no-cache', ...$packages],
             self::Dnf => ['dnf', 'install', '-y', ...$packages],
             self::Yum => ['yum', 'install', '-y', ...$packages],
+            self::Brew => ['brew', 'install', ...$packages],
         };
     }
 
