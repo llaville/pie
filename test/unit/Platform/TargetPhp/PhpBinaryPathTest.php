@@ -16,7 +16,9 @@ use Php\Pie\Platform\TargetPhp\PhpBinaryPath;
 use Php\Pie\Util\Process;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\PhpExecutableFinder;
 
@@ -35,11 +37,13 @@ use function get_loaded_extensions;
 use function ini_get;
 use function is_dir;
 use function is_executable;
+use function mkdir;
 use function php_uname;
 use function phpversion;
 use function sprintf;
 use function strtolower;
 use function sys_get_temp_dir;
+use function trim;
 use function uniqid;
 
 use const DIRECTORY_SEPARATOR;
@@ -235,11 +239,28 @@ final class PhpBinaryPathTest extends TestCase
         );
     }
 
-    public function testExtensionPath(): void
+    #[RequiresOperatingSystemFamily('Linux')]
+    public function testExtensionPathOnLinuxThatAlreadyExists(): void
     {
         $phpBinary = PhpBinaryPath::fromCurrentProcess();
 
-        $expectedExtensionDir = ini_get('extension_dir');
+        $expectedExtensionDir = (string) ini_get('extension_dir');
+        self::assertNotEmpty($expectedExtensionDir);
+        self::assertDirectoryExists($expectedExtensionDir);
+
+        self::assertSame(
+            $expectedExtensionDir,
+            $phpBinary->extensionPath(),
+        );
+    }
+
+    #[RequiresOperatingSystemFamily('Windows')]
+    public function testExtensionPathOnWindows(): void
+    {
+        $phpBinary = PhpBinaryPath::fromCurrentProcess();
+
+        $expectedExtensionDir = (string) ini_get('extension_dir');
+        self::assertNotEmpty($expectedExtensionDir);
 
         // `extension_dir` may be a relative URL on Windows (e.g. "ext"), so resolve it according to the location of PHP
         if (! file_exists($expectedExtensionDir) || ! is_dir($expectedExtensionDir)) {
@@ -255,9 +276,32 @@ final class PhpBinaryPathTest extends TestCase
         );
     }
 
+    #[RequiresOperatingSystemFamily('Windows')]
+    public function testRelativeExtensionPathOnWindowsIsFilled(): void
+    {
+        $phpBinary = $this->createPartialMock(PhpBinaryPath::class, ['phpinfo']);
+        (new ReflectionMethod($phpBinary, '__construct'))
+            ->invoke($phpBinary, trim((string) (new PhpExecutableFinder())->find()), null);
+
+        $configuredExtensionPath = 'foo';
+        self::assertDirectoryDoesNotExist($configuredExtensionPath, 'test cannot run if the same-named extension dir already exists in cwd');
+
+        $fullExtensionPath = dirname($phpBinary->phpBinaryPath) . DIRECTORY_SEPARATOR . $configuredExtensionPath;
+        mkdir($fullExtensionPath, 0777, true);
+        self::assertDirectoryExists($fullExtensionPath);
+
+        $phpBinary->expects(self::once())
+            ->method('phpinfo')
+            ->willReturn(sprintf('extension_dir => %s => %s', $configuredExtensionPath, $configuredExtensionPath));
+
+        self::assertSame($fullExtensionPath, $phpBinary->extensionPath());
+    }
+
     public function testExtensionPathIsImplicitlyCreated(): void
     {
         $phpBinary = $this->createPartialMock(PhpBinaryPath::class, ['phpinfo']);
+        (new ReflectionMethod($phpBinary, '__construct'))
+            ->invoke($phpBinary, trim((string) (new PhpExecutableFinder())->find()), null);
 
         $configuredExtensionPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('PIE_non_existent_extension_path', true);
         self::assertDirectoryDoesNotExist($configuredExtensionPath);
