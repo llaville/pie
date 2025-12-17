@@ -251,6 +251,10 @@ final class CommandHelper
 
     public static function shouldCheckForBuildTools(InputInterface $input): bool
     {
+        if (Platform::isWindows()) {
+            return false;
+        }
+
         return ! $input->hasOption(self::OPTION_SUPPRESS_BUILD_TOOLS_CHECK)
             || ! $input->getOption(self::OPTION_SUPPRESS_BUILD_TOOLS_CHECK);
     }
