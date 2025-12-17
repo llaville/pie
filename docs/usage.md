@@ -70,6 +70,24 @@ RUN pie install asgrim/example-pie-extension
 If the extension you would like to install needs additional libraries or other
 dependencies, then these must be installed beforehand too.
 
+### Executable PIE (Experimental)
+
+As of 1.4.0 an **experimental** executable (binary) version of PIE is included.
+The PIE is built using [Static PHP](https://static-php.dev/), which builds a
+self-contained PHP executable with the extensions that PIE needs to run, and
+bundles the PHAR as a single distributable executable. Please keep in mind that
+this is **experimental** and we do not recommend this for production use for
+the time being. Please also note there are some limitations:
+
+ - [php/pie#459](https://github.com/php/pie/discussions/459) - the OSX version
+   is not signed with an Apple Developer account, which means (at your own risk)
+   you would need to tell your system to trust the downloaded executable.
+ - [php/pie#460](https://github.com/php/pie/discussions/460) - all the binary
+   versions have the `pie self-update` feature disabled for now.
+
+If you find the binary releases useful, please leave feedback or upvote on the
+relevant discussions, so we can gauge interest in improving this functionality.
+
 ## Prerequisites for PIE
 
 Running PIE requires PHP 8.1 or newer. However, you may still use PIE to install
