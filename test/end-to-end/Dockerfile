@@ -7,6 +7,7 @@ FROM alpine AS test_pie_installs_build_tools_on_alpine
 RUN apk add php php-phar php-mbstring php-iconv php-openssl bzip2-dev libbz2
 COPY --from=build_pie_phar /app/pie.phar /usr/local/bin/pie
 RUN pie install --auto-install-build-tools -v php/bz2
+RUN apk del .php-pie-deps
 RUN pie show
 
 FROM fedora AS test_pie_installs_build_tools_on_fedora

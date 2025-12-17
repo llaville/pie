@@ -52,7 +52,7 @@ enum PackageManager: string
         return match ($this) {
             self::Test => ['echo', '"fake installing ' . implode(', ', $packages) . '"'],
             self::Apt => ['apt-get', 'install', '-y', '--no-install-recommends', '--no-install-suggests', ...$packages],
-            self::Apk => ['apk', 'add', '--no-cache', ...$packages],
+            self::Apk => ['apk', 'add', '--no-cache', '--virtual', '.php-pie-deps', ...$packages],
             self::Dnf => ['dnf', 'install', '-y', ...$packages],
             self::Yum => ['yum', 'install', '-y', ...$packages],
             self::Brew => ['brew', 'install', ...$packages],

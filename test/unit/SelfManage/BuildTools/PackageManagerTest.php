@@ -22,8 +22,20 @@ final class PackageManagerTest extends TestCase
             PackageManager::Apt->installCommand(['a', 'b']),
         );
         self::assertSame(
-            ['apk', 'add', '--no-cache', 'a', 'b'],
+            ['apk', 'add', '--no-cache', '--virtual', '.php-pie-deps', 'a', 'b'],
             PackageManager::Apk->installCommand(['a', 'b']),
+        );
+        self::assertSame(
+            ['dnf', 'install', '-y', 'a', 'b'],
+            PackageManager::Dnf->installCommand(['a', 'b']),
+        );
+        self::assertSame(
+            ['yum', 'install', '-y', 'a', 'b'],
+            PackageManager::Yum->installCommand(['a', 'b']),
+        );
+        self::assertSame(
+            ['brew', 'install', 'a', 'b'],
+            PackageManager::Brew->installCommand(['a', 'b']),
         );
     }
 }
