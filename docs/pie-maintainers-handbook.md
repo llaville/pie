@@ -6,19 +6,32 @@ order: 3
 
 ## Branching strategy
 
-At the moment, we operate a single `main` branch, and feature branches. In the
-future, to better facilitate patch versions, we may switch to a versioned
-branching strategy.
+Since 1.3.0, we operate a branch per minor release, with an `x` for the patch
+version, for example, 1.3 series branch is named `1.3.x`, 1.4 is named `1.4.x`
+and so on. This allows releasing patch versions on older releases if a bug is
+found, for example.
+
+### New features
+
+New feature branches should be based on the latest trunk (i.e. the default
+branch). Once merged, that feature will be part of the next minor release.
+
+### Bugfixes/Patches
+
+Bugfixes/patches should be based on the oldest supported or desired patch
+version. For example, if a bug affects the 1.3 series, a PR should be made
+from the feature branch to the `1.3.x` branch.
 
 ## Release process
 
-Make sure you have the latest version to be released, for example, one of:
+Make sure you have the latest version of the trunk to be released, for example,
+one of:
 
 ```shell
-# Using git reset (note: discards any local commits on `main`)
-git checkout main && git fetch upstream && git reset --hard upstream/main
-# or, using git pull (use `--ff-only` to avoid making merge commits)
-git checkout main && git pull --ff-only upstream main
+# Using git reset (note: discards any local commits on `1.3.x`)
+git checkout 1.3.x && git fetch upstream && git reset --hard upstream/1.3.x
+# or, using git pull (note: use `--ff-only` to avoid making merge commits)
+git checkout 1.3.x && git pull --ff-only upstream 1.3.x
 ```
 
 Prepare a changelog, set the version and milestone to be released, e.g.:
@@ -62,3 +75,9 @@ verify everything is correct, and publish the release.
 ```shell
 rm CHANGELOG-$PIE_VERSION.md
 ```
+
+### Minor or Major releases: updating branches
+
+Once a minor or major release is made, a new trunk should be created. For
+example, if you just released `1.3.0` from the `1.3.x` branch, you should then
+create a new `1.4.x` branch, and set that as the default.
