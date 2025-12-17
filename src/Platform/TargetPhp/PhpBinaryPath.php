@@ -107,17 +107,19 @@ class PhpBinaryPath
                 return $extensionPath;
             }
 
+            // `extension_dir` may be a relative URL on Windows, so resolve it according to the location of PHP
+            if (self::operatingSystem() === OperatingSystem::Windows) {
+                $phpPath              = dirname($this->phpBinaryPath);
+                $attemptExtensionPath = $phpPath . DIRECTORY_SEPARATOR . $extensionPath;
+
+                if (file_exists($attemptExtensionPath) && is_dir($attemptExtensionPath)) {
+                    return $attemptExtensionPath;
+                }
+            }
+
             // if the path is absolute, try to create it
             if (mkdir($extensionPath, 0777, true) && file_exists($extensionPath) && is_dir($extensionPath)) {
                 return $extensionPath;
-            }
-
-            // `extension_dir` may be a relative URL on Windows, so resolve it according to the location of PHP
-            $phpPath              = dirname($this->phpBinaryPath);
-            $attemptExtensionPath = $phpPath . DIRECTORY_SEPARATOR . $extensionPath;
-
-            if (file_exists($attemptExtensionPath) && is_dir($attemptExtensionPath)) {
-                return $attemptExtensionPath;
             }
         }
 

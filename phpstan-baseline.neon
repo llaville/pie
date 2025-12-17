@@ -487,18 +487,6 @@ parameters:
 			path: test/unit/Installing/InstallForPhpProject/InstallSelectedPackageTest.php
 
 		-
-			message: '#^Parameter \#1 \$filename of function file_exists expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: test/unit/Platform/TargetPhp/PhpBinaryPathTest.php
-
-		-
-			message: '#^Parameter \#1 \$filename of function is_dir expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: test/unit/Platform/TargetPhp/PhpBinaryPathTest.php
-
-		-
 			message: '#^Method Php\\PieUnitTest\\SelfManage\\Verify\\FallbackVerificationUsingOpenSslTest\:\:prepareCertificateAndSignature\(\) should return array\{string, string\} but returns array\{mixed, mixed\}\.$#'
 			identifier: return.type
 			count: 1

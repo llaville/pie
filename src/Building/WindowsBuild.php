@@ -26,10 +26,13 @@ final class WindowsBuild implements Build
     ): BinaryFile {
         $prebuiltDll = WindowsExtensionAssetName::determineDllName($targetPlatform, $downloadedPackage);
 
-        $io->write(sprintf(
-            '<info>Nothing to do on Windows, prebuilt DLL found:</info> %s',
-            $prebuiltDll,
-        ));
+        $io->write(
+            sprintf(
+                '<info>Nothing to build on Windows, prebuilt DLL found:</info> %s',
+                $prebuiltDll,
+            ),
+            verbosity: IOInterface::VERBOSE,
+        );
 
         return BinaryFile::fromFileWithSha256Checksum($prebuiltDll);
     }
