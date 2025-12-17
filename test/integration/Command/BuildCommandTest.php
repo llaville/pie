@@ -31,7 +31,7 @@ class BuildCommandTest extends TestCase
         $outputString = $this->commandTester->getDisplay();
 
         if (Platform::isWindows()) {
-            self::assertStringContainsString('Nothing to do on Windows', $outputString);
+            self::assertStringContainsString('Found prebuilt archive', $outputString);
 
             return;
         }
