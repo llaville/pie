@@ -6,7 +6,7 @@ namespace Php\Pie\ComposerIntegration;
 
 use Composer\Installer\LibraryInstaller;
 use Composer\IO\IOInterface;
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Composer\Package\PackageInterface;
 use Composer\PartialComposer;
 use Composer\Repository\InstalledRepositoryInterface;
@@ -52,7 +52,7 @@ class PiePackageInstaller extends LibraryInstaller
                     return null;
                 }
 
-                if (! $composerPackage instanceof CompletePackage) {
+                if (! $composerPackage instanceof CompletePackageInterface) {
                     $io->writeError(sprintf(
                         '<error>Not using PIE to install %s as it was not a Complete Package</error>',
                         $composerPackage->getName(),
@@ -94,7 +94,7 @@ class PiePackageInstaller extends LibraryInstaller
                     return null;
                 }
 
-                if (! $composerPackage instanceof CompletePackage) {
+                if (! $composerPackage instanceof CompletePackageInterface) {
                     $io->writeError(sprintf(
                         '<error>Not using PIE to install %s as it was not a Complete Package</error>',
                         $composerPackage->getName(),
