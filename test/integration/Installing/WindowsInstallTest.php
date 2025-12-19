@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Php\PieIntegrationTest\Installing;
 
 use Composer\IO\BufferIO;
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Php\Pie\DependencyResolver\Package;
 use Php\Pie\Downloading\DownloadedPackage;
 use Php\Pie\ExtensionName;
@@ -47,7 +47,7 @@ final class WindowsInstallTest extends TestCase
     {
         $downloadedPackage = DownloadedPackage::fromPackageAndExtractedPath(
             new Package(
-                $this->createMock(CompletePackage::class),
+                $this->createMock(CompletePackageInterface::class),
                 ExtensionType::PhpModule,
                 ExtensionName::normaliseFromString('pie_test_ext'),
                 'php/pie-test-ext',

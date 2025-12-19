@@ -7,7 +7,7 @@ namespace Php\PieUnitTest\Command;
 use Composer\Composer;
 use Composer\IO\BufferIO;
 use Composer\IO\NullIO;
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Composer\Repository\ComposerRepository;
 use Composer\Repository\PathRepository;
 use Composer\Repository\RepositoryManager;
@@ -95,7 +95,7 @@ final class CommandHelperTest extends TestCase
 
     public function testProcessingConfigureOptionsFromInput(): void
     {
-        $composerPackage = $this->createMock(CompletePackage::class);
+        $composerPackage = $this->createMock(CompletePackageInterface::class);
         $composerPackage->method('getPrettyName')->willReturn('foo/bar');
         $composerPackage->method('getPrettyVersion')->willReturn('1.0.0');
         $composerPackage->method('getType')->willReturn('php-ext');

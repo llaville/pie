@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Php\PieUnitTest\Installing\Ini;
 
 use Composer\IO\BufferIO;
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Php\Pie\DependencyResolver\Package;
 use Php\Pie\Downloading\DownloadedPackage;
 use Php\Pie\ExtensionName;
@@ -92,7 +92,7 @@ final class PickBestSetupIniApproachTest extends TestCase
             $this->targetPlatform(),
             DownloadedPackage::fromPackageAndExtractedPath(
                 new Package(
-                    $this->createMock(CompletePackage::class),
+                    $this->createMock(CompletePackageInterface::class),
                     ExtensionType::PhpModule,
                     ExtensionName::normaliseFromString('foo'),
                     'test-vendor/test-package',
@@ -127,7 +127,7 @@ final class PickBestSetupIniApproachTest extends TestCase
             $this->targetPlatform(),
             DownloadedPackage::fromPackageAndExtractedPath(
                 new Package(
-                    $this->createMock(CompletePackage::class),
+                    $this->createMock(CompletePackageInterface::class),
                     ExtensionType::PhpModule,
                     ExtensionName::normaliseFromString('foo'),
                     'test-vendor/test-package',
@@ -162,7 +162,7 @@ final class PickBestSetupIniApproachTest extends TestCase
             $this->targetPlatform(),
             DownloadedPackage::fromPackageAndExtractedPath(
                 new Package(
-                    $this->createMock(CompletePackage::class),
+                    $this->createMock(CompletePackageInterface::class),
                     ExtensionType::PhpModule,
                     ExtensionName::normaliseFromString('foo'),
                     'test-vendor/test-package',

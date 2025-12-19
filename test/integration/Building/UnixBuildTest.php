@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Php\PieIntegrationTest\Building;
 
 use Composer\IO\BufferIO;
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Composer\Util\Platform;
 use Php\Pie\Building\ExtensionBinaryNotFound;
 use Php\Pie\Building\UnixBuild;
@@ -37,7 +37,7 @@ final class UnixBuildTest extends TestCase
 
         $downloadedPackage = DownloadedPackage::fromPackageAndExtractedPath(
             new Package(
-                $this->createMock(CompletePackage::class),
+                $this->createMock(CompletePackageInterface::class),
                 ExtensionType::PhpModule,
                 ExtensionName::normaliseFromString('pie_test_ext'),
                 'pie_test_ext',
@@ -86,7 +86,7 @@ final class UnixBuildTest extends TestCase
 
         $downloadedPackage = DownloadedPackage::fromPackageAndExtractedPath(
             new Package(
-                $this->createMock(CompletePackage::class),
+                $this->createMock(CompletePackageInterface::class),
                 ExtensionType::PhpModule,
                 ExtensionName::normaliseFromString('mismatched_name'),
                 'pie_test_ext',
@@ -121,7 +121,7 @@ final class UnixBuildTest extends TestCase
 
         $output = new BufferIO();
 
-        $composerPackage = $this->createMock(CompletePackage::class);
+        $composerPackage = $this->createMock(CompletePackageInterface::class);
         $composerPackage->method('getPrettyName')->willReturn('myvendor/pie_test_ext');
         $composerPackage->method('getPrettyVersion')->willReturn('0.1.0');
         $composerPackage->method('getType')->willReturn('php-ext');
@@ -174,7 +174,7 @@ final class UnixBuildTest extends TestCase
 
         $downloadedPackage = DownloadedPackage::fromPackageAndExtractedPath(
             new Package(
-                $this->createMock(CompletePackage::class),
+                $this->createMock(CompletePackageInterface::class),
                 ExtensionType::PhpModule,
                 ExtensionName::normaliseFromString('pie_test_ext'),
                 'pie_test_ext',
@@ -211,7 +211,7 @@ final class UnixBuildTest extends TestCase
 
         $downloadedPackage = DownloadedPackage::fromPackageAndExtractedPath(
             new Package(
-                $this->createMock(CompletePackage::class),
+                $this->createMock(CompletePackageInterface::class),
                 ExtensionType::PhpModule,
                 ExtensionName::normaliseFromString('pie_test_ext'),
                 'pie_test_ext',

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Php\PieIntegrationTest\Installing;
 
 use Composer\IO\BufferIO;
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Composer\Util\Platform;
 use Php\Pie\Building\UnixBuild;
 use Php\Pie\DependencyResolver\Package;
@@ -78,7 +78,7 @@ final class UnixInstallTest extends TestCase
 
         $downloadedPackage = DownloadedPackage::fromPackageAndExtractedPath(
             new Package(
-                $this->createMock(CompletePackage::class),
+                $this->createMock(CompletePackageInterface::class),
                 ExtensionType::PhpModule,
                 ExtensionName::normaliseFromString('pie_test_ext'),
                 'pie_test_ext',

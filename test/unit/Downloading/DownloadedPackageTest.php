@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Php\PieUnitTest\Downloading;
 
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Php\Pie\DependencyResolver\Package;
 use Php\Pie\Downloading\DownloadedPackage;
 use Php\Pie\ExtensionName;
@@ -23,7 +23,7 @@ final class DownloadedPackageTest extends TestCase
     public function testFromPackageAndExtractedPath(): void
     {
         $package = new Package(
-            $this->createMock(CompletePackage::class),
+            $this->createMock(CompletePackageInterface::class),
             ExtensionType::PhpModule,
             ExtensionName::normaliseFromString('foo'),
             'foo/bar',
@@ -41,7 +41,7 @@ final class DownloadedPackageTest extends TestCase
 
     public function testFromPackageAndExtractedPathWithBuildPath(): void
     {
-        $composerPackage = $this->createMock(CompletePackage::class);
+        $composerPackage = $this->createMock(CompletePackageInterface::class);
         $composerPackage->method('getPrettyName')->willReturn('foo/bar');
         $composerPackage->method('getPrettyVersion')->willReturn('1.2.3');
         $composerPackage->method('getType')->willReturn('php-ext');
@@ -59,7 +59,7 @@ final class DownloadedPackageTest extends TestCase
 
     public function testFromPackageAndExtractedPathWithBuildPathWithVersionTemplate(): void
     {
-        $composerPackage = $this->createMock(CompletePackage::class);
+        $composerPackage = $this->createMock(CompletePackageInterface::class);
         $composerPackage->method('getPrettyName')->willReturn('foo/bar');
         $composerPackage->method('getPrettyVersion')->willReturn('1.2.3');
         $composerPackage->method('getType')->willReturn('php-ext');
@@ -77,7 +77,7 @@ final class DownloadedPackageTest extends TestCase
 
     public function testBuildPathDetectedFromExtractedPrePackagedSourceAsset(): void
     {
-        $composerPackage = $this->createMock(CompletePackage::class);
+        $composerPackage = $this->createMock(CompletePackageInterface::class);
         $composerPackage->method('getPrettyName')->willReturn('foo/bar');
         $composerPackage->method('getPrettyVersion')->willReturn('1.2.3');
         $composerPackage->method('getType')->willReturn('php-ext');

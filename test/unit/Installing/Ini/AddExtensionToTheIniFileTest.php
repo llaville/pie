@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Php\PieUnitTest\Installing\Ini;
 
 use Composer\IO\BufferIO;
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Php\Pie\DependencyResolver\Package;
 use Php\Pie\ExtensionName;
 use Php\Pie\ExtensionType;
@@ -59,7 +59,7 @@ final class AddExtensionToTheIniFileTest extends TestCase
             self::assertFalse((new AddExtensionToTheIniFile())(
                 $unwritableFilename,
                 new Package(
-                    $this->createMock(CompletePackage::class),
+                    $this->createMock(CompletePackageInterface::class),
                     ExtensionType::PhpModule,
                     ExtensionName::normaliseFromString('foobar'),
                     'foo/bar',
@@ -95,7 +95,7 @@ final class AddExtensionToTheIniFileTest extends TestCase
             self::assertTrue((new AddExtensionToTheIniFile())(
                 $unwritableFilename,
                 new Package(
-                    $this->createMock(CompletePackage::class),
+                    $this->createMock(CompletePackageInterface::class),
                     ExtensionType::PhpModule,
                     ExtensionName::normaliseFromString('foobar'),
                     'foo/bar',
@@ -127,7 +127,7 @@ final class AddExtensionToTheIniFileTest extends TestCase
             self::assertFalse((new AddExtensionToTheIniFile())(
                 $unreadableIniFile,
                 new Package(
-                    $this->createMock(CompletePackage::class),
+                    $this->createMock(CompletePackageInterface::class),
                     ExtensionType::PhpModule,
                     ExtensionName::normaliseFromString('foobar'),
                     'foo/bar',
@@ -170,7 +170,7 @@ final class AddExtensionToTheIniFileTest extends TestCase
             self::assertFalse((new AddExtensionToTheIniFile())(
                 $iniFile,
                 new Package(
-                    $this->createMock(CompletePackage::class),
+                    $this->createMock(CompletePackageInterface::class),
                     ExtensionType::PhpModule,
                     $extensionName,
                     'foo/bar',
@@ -207,7 +207,7 @@ final class AddExtensionToTheIniFileTest extends TestCase
             self::assertTrue((new AddExtensionToTheIniFile())(
                 $iniFile,
                 new Package(
-                    $this->createMock(CompletePackage::class),
+                    $this->createMock(CompletePackageInterface::class),
                     ExtensionType::PhpModule,
                     ExtensionName::normaliseFromString('foobar'),
                     'foo/bar',
@@ -250,7 +250,7 @@ final class AddExtensionToTheIniFileTest extends TestCase
             self::assertTrue((new AddExtensionToTheIniFile())(
                 $iniFile,
                 new Package(
-                    $this->createMock(CompletePackage::class),
+                    $this->createMock(CompletePackageInterface::class),
                     ExtensionType::PhpModule,
                     ExtensionName::normaliseFromString('foobar'),
                     'foo/bar',

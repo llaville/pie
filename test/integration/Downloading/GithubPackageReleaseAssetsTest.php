@@ -6,7 +6,7 @@ namespace Php\PieIntegrationTest\Downloading;
 
 use Composer\Factory;
 use Composer\IO\NullIO;
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Composer\Util\HttpDownloader;
 use Php\Pie\DependencyResolver\Package;
 use Php\Pie\Downloading\GithubPackageReleaseAssets;
@@ -46,7 +46,7 @@ final class GithubPackageReleaseAssetsTest extends TestCase
         );
 
         $package = new Package(
-            $this->createMock(CompletePackage::class),
+            $this->createMock(CompletePackageInterface::class),
             ExtensionType::PhpModule,
             ExtensionName::normaliseFromString('example_pie_extension'),
             'asgrim/example-pie-extension',
