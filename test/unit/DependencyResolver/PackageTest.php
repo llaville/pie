@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Php\PieUnitTest\DependencyResolver;
 
 use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use InvalidArgumentException;
 use Php\Pie\DependencyResolver\Package;
 use Php\Pie\ExtensionName;
@@ -124,7 +125,7 @@ final class PackageTest extends TestCase
     public function testGithubOrgAndRepo(string $composerPackageName, string|null $downloadUrl, string $expectedGithubOrgAndRepo): void
     {
         $package = new Package(
-            $this->createMock(CompletePackage::class),
+            $this->createMock(CompletePackageInterface::class),
             ExtensionType::PhpModule,
             ExtensionName::normaliseFromString('foo'),
             $composerPackageName,

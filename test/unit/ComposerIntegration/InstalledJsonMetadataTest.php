@@ -7,6 +7,7 @@ namespace Php\PieUnitTest\ComposerIntegration;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Composer\Repository\InstalledArrayRepository;
 use Composer\Repository\RepositoryManager;
 use Php\Pie\ComposerIntegration\InstalledJsonMetadata;
@@ -28,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(InstalledJsonMetadata::class)]
 final class InstalledJsonMetadataTest extends TestCase
 {
-    private function mockComposerInstalledRepositoryWith(CompletePackage $package): Composer&MockObject
+    private function mockComposerInstalledRepositoryWith(CompletePackageInterface $package): Composer&MockObject
     {
         $installedRepository = new InstalledArrayRepository([$package]);
 

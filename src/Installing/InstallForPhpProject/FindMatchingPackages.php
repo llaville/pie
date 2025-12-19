@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Php\Pie\Installing\InstallForPhpProject;
 
 use Composer\Composer;
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Composer\Repository\RepositoryInterface;
 use OutOfRangeException;
 use Php\Pie\DependencyResolver\Package;
@@ -41,7 +41,7 @@ class FindMatchingPackages
                 static function (array $match) use ($pieComposer, $extensionName): bool {
                     $package = $pieComposer->getRepositoryManager()->findPackage($match['name'], '*');
 
-                    if (! $package instanceof CompletePackage) {
+                    if (! $package instanceof CompletePackageInterface) {
                         return false;
                     }
 

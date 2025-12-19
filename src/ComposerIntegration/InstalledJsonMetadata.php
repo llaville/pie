@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Php\Pie\ComposerIntegration;
 
-use Composer\Package\CompletePackage;
 use Composer\Package\CompletePackageInterface;
 use Composer\PartialComposer;
 use Php\Pie\ComposerIntegration\PieInstalledJsonMetadataKeys as MetadataKey;
@@ -118,7 +117,7 @@ class InstalledJsonMetadata
             ->getRepositoryManager()
             ->getLocalRepository()
             ->findPackages($composerPackage->getName())[0];
-        Assert::isInstanceOf($localRepositoryPackage, CompletePackage::class);
+        Assert::methodExists($localRepositoryPackage, 'setExtra');
 
         $localRepositoryPackage->setExtra(array_merge($localRepositoryPackage->getExtra(), [$key->value => $value]));
     }

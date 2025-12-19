@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Php\PieUnitTest\Downloading;
 
-use Composer\Package\CompletePackage;
 use Composer\Package\CompletePackageInterface;
 use Php\Pie\DependencyResolver\Package;
 use Php\Pie\Downloading\DownloadUrlMethod;
@@ -64,7 +63,7 @@ final class DownloadUrlMethodTest extends TestCase
 
     public function testPrePackagedSourceDownloads(): void
     {
-        $composerPackage = $this->createMock(CompletePackage::class);
+        $composerPackage = $this->createMock(CompletePackageInterface::class);
         $composerPackage->method('getPrettyName')->willReturn('foo/bar');
         $composerPackage->method('getPrettyVersion')->willReturn('1.2.3');
         $composerPackage->method('getType')->willReturn('php-ext');

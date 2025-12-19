@@ -6,6 +6,7 @@ namespace Php\Pie\ComposerIntegration;
 
 use Composer\Composer;
 use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Composer\Pcre\Preg;
 use Composer\Repository\PlatformRepository;
 use Composer\Semver\VersionParser;
@@ -85,7 +86,7 @@ class PhpBinaryPathBasedPlatformRepository extends PlatformRepository
         parent::__construct();
     }
 
-    private function packageForExtension(string $name, string $prettyVersion): CompletePackage
+    private function packageForExtension(string $name, string $prettyVersion): CompletePackageInterface
     {
         $extraDescription = '';
 

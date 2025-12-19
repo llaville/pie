@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Php\PieUnitTest\Downloading;
 
 use Composer\Downloader\TransportException;
-use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Composer\Util\Http\Response;
 use Composer\Util\HttpDownloader;
 use Php\Pie\DependencyResolver\Package;
@@ -70,7 +70,7 @@ final class GithubPackageReleaseAssetsTest extends TestCase
             ->willReturn($httpDownloaderResponse);
 
         $package = new Package(
-            $this->createMock(CompletePackage::class),
+            $this->createMock(CompletePackageInterface::class),
             ExtensionType::PhpModule,
             ExtensionName::normaliseFromString('foo'),
             'asgrim/example-pie-extension',
@@ -135,7 +135,7 @@ final class GithubPackageReleaseAssetsTest extends TestCase
             ->willReturn($httpDownloaderResponse);
 
         $package = new Package(
-            $this->createMock(CompletePackage::class),
+            $this->createMock(CompletePackageInterface::class),
             ExtensionType::PhpModule,
             ExtensionName::normaliseFromString('foo'),
             'asgrim/example-pie-extension',
@@ -181,7 +181,7 @@ final class GithubPackageReleaseAssetsTest extends TestCase
             ->willThrowException($e);
 
         $package = new Package(
-            $this->createMock(CompletePackage::class),
+            $this->createMock(CompletePackageInterface::class),
             ExtensionType::PhpModule,
             ExtensionName::normaliseFromString('foo'),
             'asgrim/example-pie-extension',
