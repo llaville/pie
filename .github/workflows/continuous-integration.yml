@@ -126,6 +126,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  end-to-end-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      # Fixes `git describe` picking the wrong tag - see https://github.com/php/pie/issues/307
+      - run: git fetch --tags --force
+      # Ensure some kind of previous tag exists, otherwise box fails
+      - run: git describe --tags HEAD || git tag 0.0.0
+      - uses: ramsey/composer-install@v3
+      - name: Run the tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: test/end-to-end/dockerfile-e2e-test.sh
+
   behaviour-tests:
     runs-on: ${{ matrix.operating-system }}
     strategy:

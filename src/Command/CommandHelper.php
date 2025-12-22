@@ -61,6 +61,8 @@ final class CommandHelper
     private const OPTION_SKIP_ENABLE_EXTENSION                = 'skip-enable-extension';
     private const OPTION_FORCE                                = 'force';
     private const OPTION_NO_CACHE                             = 'no-cache';
+    private const OPTION_AUTO_INSTALL_BUILD_TOOLS             = 'auto-install-build-tools';
+    private const OPTION_SUPPRESS_BUILD_TOOLS_CHECK           = 'no-build-tools-check';
 
     private function __construct()
     {
@@ -137,6 +139,19 @@ final class CommandHelper
             null,
             InputOption::VALUE_NONE,
             'When installing a PHP project, allow non-interactive project installations. Only used in certain contexts.',
+        );
+
+        $command->addOption(
+            self::OPTION_AUTO_INSTALL_BUILD_TOOLS,
+            null,
+            InputOption::VALUE_NONE,
+            'If build tools are missing, automatically install them, instead of prompting.',
+        );
+        $command->addOption(
+            self::OPTION_SUPPRESS_BUILD_TOOLS_CHECK,
+            null,
+            InputOption::VALUE_NONE,
+            'Do not perform the check to see if build tools are present on the system.',
         );
 
         /**
@@ -231,6 +246,22 @@ final class CommandHelper
     public static function determineForceInstallingPackageVersion(InputInterface $input): bool
     {
         return $input->hasOption(self::OPTION_FORCE) && $input->getOption(self::OPTION_FORCE);
+    }
+
+    public static function autoInstallBuildTools(InputInterface $input): bool
+    {
+        return $input->hasOption(self::OPTION_AUTO_INSTALL_BUILD_TOOLS)
+            && $input->getOption(self::OPTION_AUTO_INSTALL_BUILD_TOOLS);
+    }
+
+    public static function shouldCheckForBuildTools(InputInterface $input): bool
+    {
+        if (Platform::isWindows()) {
+            return false;
+        }
+
+        return ! $input->hasOption(self::OPTION_SUPPRESS_BUILD_TOOLS_CHECK)
+            || ! $input->getOption(self::OPTION_SUPPRESS_BUILD_TOOLS_CHECK);
     }
 
     public static function determinePhpizePathFromInputs(InputInterface $input): PhpizePath|null

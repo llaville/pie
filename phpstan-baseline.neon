@@ -319,12 +319,6 @@ parameters:
 			path: src/Platform/TargetPhp/PhpBinaryPath.php
 
 		-
-			message: '#^Call to function array_key_exists\(\) with 1 and array\{non\-falsy\-string, string\} will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Platform/TargetPhp/PhpizePath.php
-
-		-
 			message: '#^Call to function array_key_exists\(\) with 2 and array\{non\-falsy\-string, string, non\-falsy\-string\} will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1

@@ -16,6 +16,8 @@ use Php\Pie\DependencyResolver\InvalidPackageName;
 use Php\Pie\DependencyResolver\UnableToResolveRequirement;
 use Php\Pie\Installing\InstallForPhpProject\FindMatchingPackages;
 use Php\Pie\Platform\TargetPlatform;
+use Php\Pie\SelfManage\BuildTools\CheckAllBuildTools;
+use Php\Pie\SelfManage\BuildTools\PackageManager;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -37,6 +39,7 @@ final class InstallCommand extends Command
         private readonly InvokeSubCommand $invokeSubCommand,
         private readonly FindMatchingPackages $findMatchingPackages,
         private readonly IOInterface $io,
+        private readonly CheckAllBuildTools $checkBuildTools,
     ) {
         parent::__construct();
     }
@@ -77,6 +80,15 @@ final class InstallCommand extends Command
 
         $forceInstallPackageVersion = CommandHelper::determineForceInstallingPackageVersion($input);
         CommandHelper::applyNoCacheOptionIfSet($input, $this->io);
+
+        if (CommandHelper::shouldCheckForBuildTools($input)) {
+            $this->checkBuildTools->check(
+                $this->io,
+                PackageManager::detect(),
+                $targetPlatform,
+                CommandHelper::autoInstallBuildTools($input),
+            );
+        }
 
         $composer = PieComposerFactory::createPieComposer(
             $this->container,
