@@ -40,12 +40,22 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: pie-${{ github.sha }}.phar
-      - name: Verify the PHAR
+      - name: Fetch the executable PIEs from artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: executable-pie-binaries
+          pattern: pie-${{ github.sha }}-*.bin
+          merge-multiple: true
+      - name: Verify the PHAR and binaries
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh attestation verify pie.phar --repo ${{ github.repository }}
+        run: |
+          gh attestation verify pie.phar --repo ${{ github.repository }} ;
+          find executable-pie-binaries -type f -exec gh attestation verify {} --repo ${{ github.repository }} \;
       - name: Copy PHAR into docs
         run: cp pie.phar docs-package/pie-nightly.phar
+      - name: Copy executables into docs
+        run: cp executable-pie-binaries/* docs-package/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:

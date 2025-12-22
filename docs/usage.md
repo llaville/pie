@@ -88,6 +88,25 @@ the time being. Please also note there are some limitations:
 If you find the binary releases useful, please leave feedback or upvote on the
 relevant discussions, so we can gauge interest in improving this functionality.
 
+The "nightly" versions of these can be found here:
+
+| Operating System | Architecture     | Download URL                                  |
+|------------------|------------------|-----------------------------------------------|
+| Linux            | ARM 64 / aarch64 | https://php.github.io/pie/pie-Linux-ARM64     |
+| Linux            | amd64 / x86_64   | https://php.github.io/pie/pie-Linux-X64       |
+| OS X             | ARM 64 / aarch64 | https://php.github.io/pie/pie-macOS-ARM64     |
+| OS X             | Intel / x86_64   | https://php.github.io/pie/pie-macOS-X64       |
+| Windows          | x86_64           | https://php.github.io/pie/pie-Windows-X64.exe |
+
+We *highly* recommend you verify the file came from the PHP GitHub repository
+before running it, for example:
+
+```shell
+$ gh attestation verify --owner php pie-Linux-X64
+$ chmod +x pie-Linux-X64
+$ ./pie-Linux-X64 --version
+```
+
 ## Prerequisites for PIE
 
 Running PIE requires PHP 8.1 or newer. However, you may still use PIE to install
