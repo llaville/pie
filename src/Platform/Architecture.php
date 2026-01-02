@@ -20,7 +20,7 @@ enum Architecture
     {
         return match ($architecture) {
             'x64', 'x86_64', 'AMD64' => self::x86_64,
-            'arm64' => self::arm64,
+            'arm64', 'aarch64' => self::arm64,
             default => self::x86,
         };
     }

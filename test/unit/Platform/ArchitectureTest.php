@@ -20,6 +20,7 @@ final class ArchitectureTest extends TestCase
             'x86_64' => ['x86_64', Architecture::x86_64],
             'AMD64' => ['AMD64', Architecture::x86_64],
             'arm64' => ['arm64', Architecture::arm64],
+            'aarch64' => ['aarch64', Architecture::arm64],
             'x86' => ['x86', Architecture::x86],
             'something' => ['something', Architecture::x86],
         ];
