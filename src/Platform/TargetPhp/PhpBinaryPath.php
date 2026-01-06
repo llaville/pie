@@ -446,12 +446,12 @@ PHP,
     private static function cleanWarningAndDeprecationsFromOutput(string $testOutput): string
     {
         // Note: xdebug can prefix `PHP ` onto warnings/deprecations, so filter them out too
-        return implode(
+        return trim(implode(
             "\n",
             array_filter(
                 explode("\n", $testOutput),
                 static fn (string $line) => ! preg_match('/^(Deprecated|Warning|PHP Warning|PHP Deprecated):/', $line),
             ),
-        );
+        ));
     }
 }
